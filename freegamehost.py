@@ -238,7 +238,7 @@ class FreegameHostRenewal:
                     timestamp = sb.get_text('[class*="RenewBox__TimerDigits"]')
                     panel_screenshot = f"{self.screenshot_dir}/panel.png"
                     sb.save_screenshot(panel_screenshot)
-                    self.send_telegram_notify('⏳ FreegameHost 服务器续期按钮冷却中...\n\n🕒 服务器剩余到期时间为: {timestamp}\n', panel_screenshot)
+                    self.send_telegram_notify(f"⏳ FreegameHost 服务器续期按钮冷却中...\n\n🕒 服务器剩余到期时间为: {timestamp}\n", panel_screenshot)
                     return
          
                 # 4. 点击续期

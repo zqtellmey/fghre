@@ -231,27 +231,26 @@ class FreegameHostRenewal:
 
                 self._handle_cookie_consent(sb)
                 time.sleep(3)
-
-                check = '//button[contains(., "COOLDOWN")]'
-                if check:
+         
+                # 4. 点击续期
+                self.log("🖱️ 正在点击 '+8 HOURS'...")
+                self.move_mouse_human(sb)
+                xpath = '//button[contains(., "8")]'
+                try
+                    sb.wait_for_element_present(xpath, timeout=20)
+                    sb.scroll_to(xpath)
+                    sb.sleep(random.uniform(1, 2))
+                    sb.hover(xpath)
+                    sb.sleep(random.uniform(0.5, 1.2))
+                    sb.slow_click(xpath) 
+                    self.human_wait(6, 10)
+                except Exception as e_click:
                     self.log("⏳ 冷却中....")
                     timestamp = sb.get_text('[class*="RenewBox__TimerDigits"]')
                     panel_screenshot = f"{self.screenshot_dir}/panel.png"
                     sb.save_screenshot(panel_screenshot)
                     self.send_telegram_notify(f"⏳ FreegameHost 服务器续期按钮冷却中...\n\n🕒 服务器剩余到期时间为: {timestamp}\n", panel_screenshot)
                     return
-         
-                # 4. 点击续期
-                self.log("🖱️ 正在点击 '+8 HOURS'...")
-                self.move_mouse_human(sb)
-                xpath = '//button[contains(., "8")]'
-                sb.wait_for_element_present(xpath, timeout=20)
-                sb.scroll_to(xpath)
-                sb.sleep(random.uniform(1, 2))
-                sb.hover(xpath)
-                sb.sleep(random.uniform(0.5, 1.2))
-                sb.slow_click(xpath) 
-                self.human_wait(6, 10)
    
                 # 5. 验证码处理循环 (已优化)
                 max_retry_rounds = 3

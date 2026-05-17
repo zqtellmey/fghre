@@ -138,6 +138,11 @@ class FreegameHostRenewal:
                     self.log(f"📸 失败截图已保存至: {self.screenshot_dir}/login_fail.png")
                     return
 
+                # 保存最终截图
+                panel_screenshot = f"{self.screenshot_dir}/panel.png"
+                sb.save_screenshot(panel_screenshot)
+                self.send_telegram_notify(msg, panel_screenshot)
+                
                 # 4. 触发弹窗
                 self.log("🖱️ 正在点击 '+8 Hours'...")
                 self.move_mouse_human(sb)

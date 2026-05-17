@@ -141,7 +141,7 @@ class FreegameHostRenewal:
                 # 保存最终截图
                 panel_screenshot = f"{self.screenshot_dir}/panel.png"
                 sb.save_screenshot(panel_screenshot)
-                self.send_telegram_notify(msg, panel_screenshot)
+                self.send_telegram_notify('进入面板', panel_screenshot)
                 
                 # 4. 触发弹窗
                 self.log("🖱️ 正在点击 '+8 Hours'...")

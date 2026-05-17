@@ -168,7 +168,7 @@ class FreegameHostRenewal:
         except Exception:
             pass
 
-    def js_click_by_xpath(sb, xpath):
+    def js_click_by_xpath(self, sb, xpath):
         sb.execute_script("""
         const xpath = arguments[0];
 
@@ -252,7 +252,7 @@ class FreegameHostRenewal:
                 # 4. 点击续期
                 self.log("🖱️ 正在点击 '+8 HOURS'...")
                 self.move_mouse_human(sb)
-                js_click_by_xpath(
+                self.js_click_by_xpath(
                     sb,
                     '//button[contains(., "+8 HOURS")]'
                 )           

@@ -252,10 +252,13 @@ class FreegameHostRenewal:
                 # 4. 点击续期
                 self.log("🖱️ 正在点击 '+8 HOURS'...")
                 self.move_mouse_human(sb)
-                self.js_click_by_xpath(
-                    sb,
-                    '//button[contains(., "+8 HOURS")]'
-                )           
+                xpath = '//button[contains(., "8")]'
+                sb.wait_for_element_present(xpath, timeout=20)
+                sb.scroll_to(xpath)
+                sb.sleep(random.uniform(1, 2))
+                sb.hover(xpath)
+                sb.sleep(random.uniform(0.5, 1.2))
+                sb.slow_click(xpath) 
                 self.human_wait(6, 10)
    
                 # 5. 验证码处理循环 (已优化)

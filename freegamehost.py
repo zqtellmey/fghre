@@ -77,6 +77,97 @@ class FreegameHostRenewal:
         except Exception as e:
             self.log(f"❌ TG 推送失败: {e}")
 
+    def _handle_cookie_consent(self, sb):
+        """处理隐私/Cookie 同意弹窗 (从本地 zampto.py 1:1 复制)"""
+        direct_selectors = [
+            "#onetrust-accept-btn-handler",
+            "button#didomi-notice-agree-button",
+            "button[aria-label*='Accept']",
+            "button[aria-label*='同意']",
+        ]
+        for sel in direct_selectors:
+            try:
+                if sb.is_element_visible(sel):
+                    sb.click(sel)
+                    self.log(f"✅ 已点击 Cookie 同意选择器: {sel}")
+                    time.sleep(1)
+                    return
+            except Exception:
+                pass
+
+        try:
+            clicked = bool(
+                sb.execute_script(r"""
+                (function() {
+                    var buttons = document.querySelectorAll('button');
+                    for (var i = 0; i < buttons.length; i++) {
+                        var text = (buttons[i].textContent || '').trim().toLowerCase().replace(/\s+/g, '');
+                        if (
+                          text === 'consent' ||
+                          text === 'accept' ||
+                          text === 'agree' ||
+                          text === 'acceptall' ||
+                          text === '同意' ||
+                          text === '我同意'
+                        ) {
+                            buttons[i].click();
+                            return true;
+                        }
+                    }
+                    var all = document.querySelectorAll('button,[role="button"],a');
+                    for (var j = 0; j < all.length; j++) {
+                        var item = all[j];
+                        var title = (item.getAttribute('aria-label') || item.getAttribute('title') || '').toLowerCase();
+                        var txt = (item.textContent || '').toLowerCase().replace(/\s+/g, '');
+                        if (
+                          title.includes('accept') || title.includes('agree') ||
+                          txt.includes('accept') || txt.includes('agree') ||
+                          txt.includes('同意') || txt.includes('全部同意')
+                        ) {
+                            item.click();
+                            return true;
+                        }
+                    }
+                    return false;
+                })()
+                """)
+            )
+            if clicked:
+                self.log("✅ 已点击 Cookie 同意")
+                time.sleep(1)
+        except Exception:
+            pass
+
+        # 中文专项兜底
+        try:
+            zh_clicked = bool(
+                sb.execute_script(r"""
+                (function() {
+                    var cands = Array.from(document.querySelectorAll('button,[role="button"],a'));
+                    function visible(el) {
+                        if (!el) return false;
+                        var r = el.getBoundingClientRect();
+                        var s = window.getComputedStyle(el);
+                        return r.width > 30 && r.height > 18 && s.visibility !== 'hidden' && s.display !== 'none';
+                    }
+                    for (var i = 0; i < cands.length; i++) {
+                        var t = (cands[i].textContent || '').trim();
+                        if (!visible(cands[i])) continue;
+                        if (t === '同意' || t.indexOf('同意') >= 0 || t.indexOf('接受') >= 0) {
+                            cands[i].click();
+                            return true;
+                        }
+                    }
+                    return false;
+                })()
+                """)
+            )
+            if zh_clicked:
+                self.log("✅ 已点击中文同意按钮")
+                time.sleep(1)
+        except Exception:
+            pass
+
     def run(self):
         self.log("=" * 40)
         self.log("🚀 FreegameHost - 拟人化续期流程")
@@ -138,24 +229,9 @@ class FreegameHostRenewal:
                     self.log(f"📸 失败截图已保存至: {self.screenshot_dir}/login_fail.png")
                     return
 
-                    cookie_btns = [
-                        '//button[contains(., "Continue with Recommended Cookies")]',
-                        '//button[contains(., "Recommended Cookies")]',
-                        '//button[contains(., "Accept")]',
-                        '//button[contains(., "I Agree")]',
-                        '//button[contains(., "Consent")]',
-                        '//button[contains(., "Got it")]',
-                    ]
+                self._handle_cookie_consent(sb)
+                time.sleep(3)
 
-                    for btn in cookie_btns:
-                        if sb.is_element_present(btn):
-                            try:
-                                sb.click(btn)
-                                self.log("🍪 已关闭 Cookie")
-                                break
-                            except:
-                                pass
-                
                 # 保存最终截图
                 panel_screenshot = f"{self.screenshot_dir}/panel.png"
                 sb.save_screenshot(panel_screenshot)
@@ -168,7 +244,7 @@ class FreegameHostRenewal:
                 sb.wait_for_ready_state_complete()
                 sb.wait_for_element_present(xpath, timeout=20)
                 sb.scroll_to(xpath)
-                sb.sleep(1)
+                time.sleep(1)
                 element = sb.find_element(xpath)
                 sb.execute_script("""
                 arguments[0].scrollIntoView({

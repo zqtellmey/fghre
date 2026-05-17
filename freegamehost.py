@@ -138,6 +138,24 @@ class FreegameHostRenewal:
                     self.log(f"📸 失败截图已保存至: {self.screenshot_dir}/login_fail.png")
                     return
 
+                    cookie_btns = [
+                        '//button[contains(., "Continue with Recommended Cookies")]',
+                        '//button[contains(., "Recommended Cookies")]',
+                        '//button[contains(., "Accept")]',
+                        '//button[contains(., "I Agree")]',
+                        '//button[contains(., "Consent")]',
+                        '//button[contains(., "Got it")]',
+                    ]
+
+                    for btn in cookie_btns:
+                        if sb.is_element_present(btn):
+                            try:
+                                sb.click(btn)
+                                self.log("🍪 已关闭 Cookie")
+                                break
+                            except:
+                                pass
+                
                 # 保存最终截图
                 panel_screenshot = f"{self.screenshot_dir}/panel.png"
                 sb.save_screenshot(panel_screenshot)

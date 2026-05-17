@@ -231,29 +231,12 @@ class FreegameHostRenewal:
 
                 self._handle_cookie_consent(sb)
                 time.sleep(3)
-
-                # 保存最终截图
-                panel_screenshot = f"{self.screenshot_dir}/panel.png"
-                sb.save_screenshot(panel_screenshot)
-                self.send_telegram_notify('进入面板', panel_screenshot)
-                
+          
                 # 4. 触发弹窗
                 self.log("🖱️ 正在点击 '+8 HOURS'...")
                 self.move_mouse_human(sb)
-                xpath = '//button[.//span[contains(text(), "+8 HOURS")]]'
-                sb.wait_for_ready_state_complete()
-                sb.wait_for_element_present(xpath, timeout=20)
-                sb.scroll_to(xpath)
-                time.sleep(1)
-                element = sb.find_element(xpath)
-                sb.execute_script("""
-                arguments[0].scrollIntoView({
-                    behavior: 'instant',
-                    block: 'center'
-                });
-                """, element)
-                sb.sleep(0.5)
-                sb.execute_script("arguments[0].click();", element)
+                sb.wait_for_element('//button[contains(., "+8 HOURS")]', timeout=10)
+                sb.click("//button[contains(., '+8 HOURS')]")
                 self.human_wait(6, 10)
    
                 # 5. 验证码处理循环 (已优化)

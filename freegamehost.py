@@ -238,9 +238,9 @@ class FreegameHostRenewal:
                 self.send_telegram_notify('进入面板', panel_screenshot)
                 
                 # 4. 触发弹窗
-                self.log("🖱️ 正在点击 '+8 Hours'...")
+                self.log("🖱️ 正在点击 '+8 HOURS'...")
                 self.move_mouse_human(sb)
-                xpath = '//button[.//span[contains(text(), "+8 Hours")]]'
+                xpath = '//button[.//span[contains(text(), "+8 HOURS")]]'
                 sb.wait_for_ready_state_complete()
                 sb.wait_for_element_present(xpath, timeout=20)
                 sb.scroll_to(xpath)

@@ -168,23 +168,6 @@ class FreegameHostRenewal:
         except Exception:
             pass
 
-    def js_click_by_xpath(self, sb, xpath):
-        sb.execute_script("""
-        const xpath = arguments[0];
-
-        const el = document.evaluate(
-            xpath,
-            document,
-            null,
-            XPathResult.FIRST_ORDERED_NODE_TYPE,
-            null
-        ).singleNodeValue;
-
-        if (el) {
-            el.click();
-        }
-        """, xpath)
-    
     def run(self):
         self.log("=" * 40)
         self.log("🚀 FreegameHost - 拟人化续期流程")

@@ -168,6 +168,23 @@ class FreegameHostRenewal:
         except Exception:
             pass
 
+    def js_click_by_xpath(sb, xpath):
+    sb.execute_script("""
+    const xpath = arguments[0];
+
+    const el = document.evaluate(
+        xpath,
+        document,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
+    ).singleNodeValue;
+
+    if (el) {
+        el.click();
+    }
+    """, xpath)
+    
     def run(self):
         self.log("=" * 40)
         self.log("🚀 FreegameHost - 拟人化续期流程")
@@ -232,23 +249,13 @@ class FreegameHostRenewal:
                 self._handle_cookie_consent(sb)
                 time.sleep(3)
           
-                # 4. 触发弹窗
+                # 4. 点击续期
                 self.log("🖱️ 正在点击 '+8 HOURS'...")
                 self.move_mouse_human(sb)
-                
-                buttons = sb.find_elements("button")
-                for b in buttons:
-                    try:
-                        txt = b.text.strip()
-                        print(repr(txt))
-
-                        if "+8 HOURS" in txt:
-                            print("FOUND")
-                            sb.execute_script("arguments[0].click();", b)
-
-                    except Exception as e:
-                        print(e)
-                
+                js_click_by_xpath(
+                    sb,
+                    '//button[contains(., "+8 HOURS")]'
+                )           
                 self.human_wait(6, 10)
    
                 # 5. 验证码处理循环 (已优化)

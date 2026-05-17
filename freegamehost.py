@@ -236,7 +236,7 @@ class FreegameHostRenewal:
                 self.log("🖱️ 正在点击 '+8 HOURS'...")
                 self.move_mouse_human(sb)
                 xpath = '//button[contains(., "8")]'
-                try
+                try:
                     sb.wait_for_element_present(xpath, timeout=20)
                     sb.scroll_to(xpath)
                     sb.sleep(random.uniform(1, 2))

@@ -232,13 +232,13 @@ class FreegameHostRenewal:
                 self._handle_cookie_consent(sb)
                 time.sleep(3)
 
-                check = sb.is_element_present('//button[contains(., "COOLDOWN")]')
+                check = '//button[contains(., "COOLDOWN")]'
                 if check:
                     self.log("⏳ 冷却中....")
                     timestamp = sb.get_text('[class*="RenewBox__TimerDigits"]')
                     panel_screenshot = f"{self.screenshot_dir}/panel.png"
                     sb.save_screenshot(panel_screenshot)
-                    self.send_telegram_notify('⏳ FreegameHost 服务器续期按钮冷却中...\n\n🕒 服务器剩余到期时间为: {timestamp}\n', final_screenshot)
+                    self.send_telegram_notify('⏳ FreegameHost 服务器续期按钮冷却中...\n\n🕒 服务器剩余到期时间为: {timestamp}\n', panel_screenshot)
                     return
          
                 # 4. 点击续期

@@ -141,8 +141,20 @@ class FreegameHostRenewal:
                 # 4. 触发弹窗
                 self.log("🖱️ 正在点击 '+8 Hours'...")
                 self.move_mouse_human(sb)
-                sb.wait_for_element('//button[contains(., "+8 Hours")]', timeout=10)
-                sb.click("//button[contains(., '+8 Hours')]")
+                xpath = '//button[.//span[contains(text(), "+8 Hours")]]'
+                sb.wait_for_ready_state_complete()
+                sb.wait_for_element_present(xpath, timeout=20)
+                sb.scroll_to(xpath)
+                sb.sleep(1)
+                element = sb.find_element(xpath)
+                sb.execute_script("""
+                arguments[0].scrollIntoView({
+                    behavior: 'instant',
+                    block: 'center'
+                });
+                """, element)
+                sb.sleep(0.5)
+                sb.execute_script("arguments[0].click();", element)
                 self.human_wait(6, 10)
    
                 # 5. 验证码处理循环 (已优化)

@@ -225,8 +225,10 @@ class FreegameHostRenewal:
                 if "login" in sb.get_current_url().lower():
                     self.log(f"❌ 权限失效。当前 URL: {sb.get_current_url()}")
                     # ... 省略登录失败处理 ...
-                    sb.save_screenshot(f"{self.screenshot_dir}/login_fail.png")
-                    self.log(f"📸 失败截图已保存至: {self.screenshot_dir}/login_fail.png")
+                    panel_screenshot = f"{self.screenshot_dir}/panel.png"
+                    sb.save_screenshot(panel_screenshot)
+                    self.send_telegram_notify("❌再次进入面板失败", panel_screenshot)
+                    self.log(f"📸 失败截图已保存至: {self.screenshot_dir}/panel.png")
                     return
 
                 self._handle_cookie_consent(sb)
